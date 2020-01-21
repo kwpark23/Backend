@@ -30,21 +30,21 @@ class Orders {
                         "inventoryItemId": 333,
                         "name": "Orange",
                         "quantity": 20,
-                        "expiryDate": new Date(20-03-28),
+                        "expiryDate": new Date("2020-03-28"),
                         "groceryStoreId": 1
                     },
                     {
                         "inventoryItemId": 334,
                         "name": "Apple",
                         "quantity": 20,
-                        "expiryDate": new Date(20 - 03 - 20),
+                        "expiryDate": new Date("2020- 03 - 20"),
                         "groceryStoreId": 1
                     }
                 ]
             }))
 
             fbServer.onreadystatechange = function () {
-                if (this.status == 200) {
+                if (this.status === 200) {
                     console.log("200");
                 }
             };
