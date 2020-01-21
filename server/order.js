@@ -125,7 +125,7 @@ class Order {
     parseItems(itemsList) {
         itemsList.forEach(item => {
             item = new Item(item);
-        });
+        })
     }
 
 };
