@@ -5,7 +5,7 @@ class Orders {
     constructor() {
         this.orders = [];
         this.drivers = [];
-    };
+    }
 
     fillList(ordersList) {
         ordersList.forEach(order => {
@@ -14,7 +14,7 @@ class Orders {
                 this.orders.push(order);
             }
         });
-    };
+    }
 
     // Beginning of Observable's duties
     notify(URL) {
@@ -53,7 +53,7 @@ class Orders {
         } catch (error) {
             console.log("Can't notify entity.")
         }
-    };
+    }
 
     notifyDriver(context) { // push notification
         try {
@@ -61,7 +61,7 @@ class Orders {
         } catch (error) {
             console.log("Notification failed" + error);
         }
-    };
+    }
 
     addDriver(driver) { // adds observer
         try {
@@ -73,7 +73,7 @@ class Orders {
             console.log("Can't assign driver" + error);
         }
 
-    };
+    }
 
     removeDriver(driverId) { // remove observer
         try {
@@ -82,22 +82,22 @@ class Orders {
         } catch (error) {
             console.log("Can't unsubscribe driver " + error);
         }
-    };
+    }
 
     isDriverValid(driver) {
         //check if Driver instance has ID, name, reg. vehicle
 
         return ((driver.id !== Null) && driver.name !== '' && driver.vehicle !== '');
-    };
+    }
     // End of Observable duties
 
     // Beginning of Observer duties
     update() {
         // update properties in response to changes in Inventory
-    };
+    }
 
     // End of Observer duties
-};
+}
 
 class Order {
     constructor(orderRef) {
@@ -108,11 +108,11 @@ class Order {
         this.groceryStoreId = Null;
         this.items = this.parseItems(orderRef.items);
         this.requestTime = Date(orderRef.time);
-    };
+    }
 
     setProgressStatus(newStatus) {
         this.progress = newStatus;
-    };
+    }
 
     getProgressStatus() {
         return this.progress;
@@ -120,7 +120,7 @@ class Order {
 
     getItem(itemId) {
         return this.items;
-    };
+    }
 
     parseItems(itemsList) {
         itemsList.forEach(item => {
