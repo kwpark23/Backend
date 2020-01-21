@@ -128,7 +128,7 @@ class Order {
         })
     }
 
-};
+}
 
 class Item {
     constructor(itemRef) {
