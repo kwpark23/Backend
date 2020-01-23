@@ -31,21 +31,21 @@ class Orders {
                         "inventoryItemId": 333,
                         "name": "Orange",
                         "quantity": 20,
-                        "expiryDate": new Date(20 - 03 - 28),
+                        "expiryDate": new Date("20 - 03 - 28"),
                         "groceryStoreId": 1
                     },
                     {
                         "inventoryItemId": 334,
                         "name": "Apple",
                         "quantity": 20,
-                        "expiryDate": new Date(20 - 03 - 20),
+                        "expiryDate": new Date("20 - 03 - 20"),
                         "groceryStoreId": 1
                     }
                 ]
             }))
 
             fbServer.onreadystatechange = function () {
-                if (this.status == 200) {
+                if (this.status === 200) {
                     console.log("200");
                 }
             }
@@ -88,7 +88,7 @@ class Orders {
     isDriverValid(driver) {
         //check if Driver instance has ID, name, reg. vehicle
 
-        return ((driver.id !== Null) && driver.name !== '' && driver.vehicle !== '');
+        return ((driver.id !=== Null) && driver.name !=== '' && driver.vehicle !=== '');
     }
     // End of Observable duties
 
@@ -116,15 +116,15 @@ class Orders {
 
     updateFoodBankId(ordersIdList, foodBankId) {
         ordersIdList.forEach(orderId => {
-            orde = this.orders.getOrder(orderId);
-            orde.setFoodBankId(foodBankId);
+            order= this.orders.getOrder(orderId);
+            order.setFoodBankId(foodBankId);
         })
     }
 
     updateGroceryStoreId(ordersIdList, groceryId) {
         ordersIdList.forEach(orderId => {
-            orde = this.orders.getOrder(orderId);
-            orde.setFoodBankId(groceryId);
+            order = this.orders.getOrder(orderId);
+            order.setFoodBankId(groceryId);
         })
     
 
