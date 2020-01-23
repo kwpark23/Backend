@@ -5,7 +5,8 @@ class Orders {
     constructor() {
         this.orders = [];
         this.drivers = [];
-    }
+        this.inventories = [];
+    };
 
     fillList(ordersList) {
         ordersList.forEach(order => {
@@ -14,7 +15,7 @@ class Orders {
                 this.orders.push(order);
             }
         });
-    }
+    };
 
     // Beginning of Observable's duties
     notify(URL) {
@@ -30,21 +31,21 @@ class Orders {
                         "inventoryItemId": 333,
                         "name": "Orange",
                         "quantity": 20,
-                        "expiryDate": new Date("2020-03-28"),
+                        "expiryDate": new Date(20 - 03 - 28),
                         "groceryStoreId": 1
                     },
                     {
                         "inventoryItemId": 334,
                         "name": "Apple",
                         "quantity": 20,
-                        "expiryDate": new Date("2020- 03 - 20"),
+                        "expiryDate": new Date(20 - 03 - 20),
                         "groceryStoreId": 1
                     }
                 ]
             }))
 
             fbServer.onreadystatechange = function () {
-                if (this.status === 200) {
+                if (this.status == 200) {
                     console.log("200");
                 }
             };
@@ -53,7 +54,7 @@ class Orders {
         } catch (error) {
             console.log("Can't notify entity.")
         }
-    }
+    };
 
     notifyDriver(context) { // push notification
         try {
@@ -61,7 +62,7 @@ class Orders {
         } catch (error) {
             console.log("Notification failed" + error);
         }
-    }
+    };
 
     addDriver(driver) { // adds observer
         try {
@@ -73,7 +74,7 @@ class Orders {
             console.log("Can't assign driver" + error);
         }
 
-    }
+    };
 
     removeDriver(driverId) { // remove observer
         try {
@@ -82,22 +83,53 @@ class Orders {
         } catch (error) {
             console.log("Can't unsubscribe driver " + error);
         }
-    }
+    };
 
     isDriverValid(driver) {
         //check if Driver instance has ID, name, reg. vehicle
 
         return ((driver.id !== Null) && driver.name !== '' && driver.vehicle !== '');
-    }
+    };
     // End of Observable duties
 
     // Beginning of Observer duties
-    update() {
+    subscribe(inventory) {
+        if (!this.inventories.includes(inventory)) {
+            this.inventories.push(inventory);
+        }
+    };
+
+    unsubscribe(inventory) {
+
+        if (this.inventories.includes(inventory)) {
+            this.inventories.splice(list.indexOf(inventory), 1);
+        }
+    };
+
+    updateStatus(ordersIdList, newStatus) {
         // update properties in response to changes in Inventory
-    }
+        ordersIdList.forEach(orderId => {
+            order = this.orders.getOrder(orderId);
+            order.setProgressStatus(newStatus);
+        });
+    };
+
+    updateFoodBankId(ordersIdList, foodBankId) {
+        ordersIdList.forEach(orderId => {
+            orde = this.orders.getOrder(orderId);
+            orde.setFoodBankId(foodBankId);
+        });
+    };
+
+    updateGroceryStoreId(ordersIdList, groceryId) {
+        ordersIdList.forEach(orderId => {
+            orde = this.orders.getOrder(orderId);
+            orde.setFoodBankId(groceryId);
+        });
+    };
 
     // End of Observer duties
-}
+};
 
 class Order {
     constructor(orderRef) {
@@ -108,27 +140,59 @@ class Order {
         this.groceryStoreId = Null;
         this.items = this.parseItems(orderRef.items);
         this.requestTime = Date(orderRef.time);
-    }
+    };
 
     setProgressStatus(newStatus) {
         this.progress = newStatus;
-    }
+    };
 
     getProgressStatus() {
         return this.progress;
-    }
+    };
+
+    setDriver(driver) {
+        this.driver = driver;
+    };
+
+    getDriver() {
+        return this.driver;
+    };
+
+    setFoodBankId(foodBankId) {
+        this.foodBankId = foodBankId;
+    };
+
+    getFoodBankId() {
+        return this.foodBankId;
+    };
+
+    setGroceryId(groceryId) {
+        this.groceryStoreId = groceryId;
+    };
+
+    getGroceryId() {
+        return this.groceryStoreId;
+    };
+
+    setTime(time) {
+        this.requestTime = time;
+    };
+
+    getTime() {
+        return this.requestTime;
+    };
 
     getItem(itemId) {
         return this.items;
-    }
+    };
 
     parseItems(itemsList) {
         itemsList.forEach(item => {
             item = new Item(item);
-        })
+        });
     }
 
-}
+};
 
 class Item {
     constructor(itemRef) {
