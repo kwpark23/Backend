@@ -28,7 +28,7 @@ class GroceryStoreInventory{
 	notifyOrders(statusList){
 		var i;
 		for (i = 0; i < this.orders.length; i++){
-			this.orders[i].update(statusList[i]);
+			this.orders[i].updateStatus(statusList[i]);
 		}
 	}
 
