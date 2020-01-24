@@ -2,7 +2,7 @@
  *           observed by: Drivers
  */
 
-export default class Order {
+class Order {
 
     constructor(orderRef) {
         this.orderId = orderRef.orderId
@@ -125,7 +125,7 @@ export default class Order {
 
     addDriver(driver) { // adds observer
         if (this.isDriverValid(driver)) {
-            this.driverId[driver.orderId] = driver;
+            this.driverId[driver.driverId] = driver;
             console.log("Driver added.")
         } else {
             console.log("Can't assign driver" + error);
@@ -151,7 +151,7 @@ export default class Order {
     // Beginning of Observer duties
     updateStatus(newStatus) {
         // update properties in response to changes in Inventory
-        order.setProgressStatus(newStatus);
+        this.setProgressStatus(newStatus);
     }
 
     // End of Observer duties

@@ -1,4 +1,4 @@
-export default class Item {
+class Item {
     constructor(itemRef) {
         this.inventoryItemId = itemRef.inventoryItemId;
         this.name = itemRef.name;
