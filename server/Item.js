@@ -27,3 +27,5 @@ class Item {
         return this.groceryStoreId;
     }
 }
+
+module.export = Item;
