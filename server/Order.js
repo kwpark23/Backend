@@ -2,7 +2,7 @@
  *           observed by: Drivers
  */
 
- export default class Order {
+export default class Order {
 
     constructor(orderRef) {
         this.orderId = orderRef.orderId
@@ -58,7 +58,7 @@
     }
 
     parseItems(itemsList) { // who parses itemsJSON into Items?
-        itemsList.forEach( item => {
+        itemsList.forEach(item => {
             this.inventoryItems[item.name] = item
         });
     }
@@ -110,7 +110,7 @@
             console.log("Can't notify entity.")
         }
     }
-    
+
 
     notifyDrivers(context) { // push notification
         if (this.driverId.length !== 0) {
@@ -135,11 +135,11 @@
 
     }
 
-    removeDriver(driverId) { // remove observer
-        try {
+    removeDriver(driverId) { // removes observer
+        if (driverId in this.driverId) {
             delete this.driverId[driverId];
             console.log("Driver" + driverId + " removed.");
-        } catch (error) {
+        } else {
             console.log("Can't unsubscribe driver " + error);
         }
     }
@@ -155,8 +155,7 @@
     updateStatus(newStatus) {
         // update properties in response to changes in Inventory
         order.setProgressStatus(newStatus);
-    }   
+    }
 
     // End of Observer duties
 }
-
