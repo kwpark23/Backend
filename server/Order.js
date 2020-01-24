@@ -2,7 +2,7 @@
  *           observed by: Drivers
  */
 
-class Order {
+export class Order {
 
     constructor(orderRef) {
         this.orderId = orderRef.id
