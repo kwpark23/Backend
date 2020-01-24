@@ -5,7 +5,7 @@
 export class Order {
 
     constructor(orderRef) {
-        this.orderId = orderRef.id
+        this.orderId = orderRef.orderId
         this.progressStatus = orderRef.status;
         this.foodBankId = orderRef.foodBankId;
         this.groceryId = orderRef.groceryId;
@@ -14,7 +14,7 @@ export class Order {
 
         this.driverId = {};
 
-        this.parseItems(orderRef.items);
+        this.parseItems(orderRef.inventoryItems);
     }
 
     setProgressStatus(newStatus) {
@@ -111,9 +111,12 @@ export class Order {
     
 
     notifyDrivers(context) { // push notification
-        try {
+        if (this.driverId.length !== 0) {
+            this.driverId.forEach(driver => {
+                driver.messages = context;
+            });
             console.log('Driver notified with ' + context);
-        } catch (error) {
+        } else {
             console.log("Notification failed" + error);
         }
     }
@@ -121,7 +124,7 @@ export class Order {
     addDriver(driver) { // adds observer
         try {
             if (this.isDriverValid(driver)) {
-                this.driverId[driver.id] = driver;
+                this.driverId[driver.orderId] = driver;
                 console.log("Driver added.");
             }
         } catch (error) {
