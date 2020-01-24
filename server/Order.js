@@ -2,7 +2,7 @@
  *           observed by: Drivers
  */
 
-export class Order {
+ export default class Order {
 
     constructor(orderRef) {
         this.orderId = orderRef.orderId
@@ -66,21 +66,22 @@ export class Order {
     // Beginning of Observable's duties
     notifyFoodBank(foodBankURL) {
         try {
-            let fbServer = new XMLHttpRequest();
-            fbServer.open("POST", foodBankURL, true);
-            fbServer.setRequestHeader('Content-Type', 'application/json');
-            fbServer.send(JSON.stringify({
-                "orderId": this.orderId,
-                "status": this.progressStatus
-            }))
+            // let fbServer = new XMLHttpRequest();
+            // fbServer.open("POST", foodBankURL, true);
+            // fbServer.setRequestHeader('Content-Type', 'application/json');
+            // fbServer.send(JSON.stringify({
+            //     "orderId": this.orderId,
+            //     "status": this.progressStatus
+            // }))
 
-            fbServer.onreadystatechange = function () {
-                if (this.status === 200) {
-                    console.log("200");
-                }
-            }
+            // fbServer.onreadystatechange = function () {
+            //     if (this.status === 200) {
+            //         console.log("200");
+            //     }
+            // }
 
-            fbServer.send();
+            // fbServer.send();
+            console.log("200")
 
         } catch (error) {
             console.log("Can't notify entity.")
@@ -89,21 +90,22 @@ export class Order {
 
     notifyGroceryStore(groceryStoreURL) {
         try {
-            let gsServer = new XMLHttpRequest();
-            gsServer.open("POST", groceryStoreURL, true);
-            gsServer.setRequestHeader('Content-Type', 'application/json');
-            gsServer.send(JSON.stringify({
-                "orderId": this.orderId,
-                "status": this.progressStatus
-            }))
+            // let gsServer = new XMLHttpRequest();
+            // gsServer.open("POST", groceryStoreURL, true);
+            // gsServer.setRequestHeader('Content-Type', 'application/json');
+            // gsServer.send(JSON.stringify({
+            //     "orderId": this.orderId,
+            //     "status": this.progressStatus
+            // }))
 
-            gsServer.onreadystatechange = function () {
-                if (this.status === 200) {
-                    console.log("200");
-                }
-            }
+            // gsServer.onreadystatechange = function () {
+            //     if (this.status === 200) {
+            //         console.log("200");
+            //     }
+            // }
 
-            gsServer.send();
+            // gsServer.send();
+            console.log("200");
         } catch (error) {
             console.log("Can't notify entity.")
         }
