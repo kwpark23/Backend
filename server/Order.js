@@ -124,15 +124,12 @@ export default class Order {
     }
 
     addDriver(driver) { // adds observer
-        try {
-            if (this.isDriverValid(driver)) {
-                this.driverId[driver.orderId] = driver;
-                console.log("Driver added.");
-            }
-        } catch (error) {
+        if (this.isDriverValid(driver)) {
+            this.driverId[driver.orderId] = driver;
+            console.log("Driver added.")
+        } else {
             console.log("Can't assign driver" + error);
         }
-
     }
 
     removeDriver(driverId) { // removes observer
