@@ -3,7 +3,6 @@ import Item from '../server/Item';
 import Order from '../server/Order';
 
 // Test Data
-
 const driver1 = {
     driverId: 3,
     name: 'Dragonite',
