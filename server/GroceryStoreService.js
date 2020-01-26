@@ -1,80 +1,59 @@
+
 /*This our observable; GSInventory will notify all orders when the store inventory
  * get's updated*/
 
-class GroceryStoreInventory{
-	constructor(){
-		this.status = '';
-		this.orders = [];
-		this.statusList = [];
+class GroceryStoreService {
+	constructor(emptyDict){
+		this.globalInventory = emptyDict;
 	}
 
-	//Can add observers (Example: an order)
-	addOrder(o){
-		this.orders.push(o);
-	}
-
-	//Can remove observers 
-	removeOrder(o) {
-	    const removeIndex = this.orders.findIndex(obs => {
-	      return o === obs;
-	    });
-
-	      if (removeIndex !== -1) {
-	      this.orders = this.orders.slice(removeIndex, 1);
-	    }
+ 	//newly added
+ 	refreshInventory(updatedGlobalInventory){
+ 		this.globalInventory = updatedGlobalInventory;
  	}
-
- 	//Send notification to all orders in the list
-	notifyOrders(statusList){
-		var i;
-		for (i = 0; i < this.orders.length; i++){
-			this.orders[i].updateStatus(statusList[i]);
-		}
-	}
 
 	/*Update status of each order in the list based on whether the order
 	 * can be completed with store inventory in stock 
 	 * */
-	updateStatus(gsinv){
-		var i;
-		for (i=0; i<this.orders.length; i++){
-			var counter = 0;
-			for (var gskey in gsinv) {
-				for (var ordkey in this.orders[i].orderitems){
-					if (gskey == ordkey){
-						//check whether quantity in stock can fulfill the order item
-						if (gsinv[gskey] >= this.orders[i].orderitems[ordkey]){
-							counter++;
-						}
-					}				
+	updateStatus(order){
+		
+		//check there is a matching groceryId of order
+		if (order.getGroceryId() in this.globalInventory){
+
+			//this is the grocery inventory value we want
+			var matchingInventory = this.globalInventory[order.getGroceryId()];
+			
+			//iterate through each item in the order
+			//an item is a hash table
+			for (var item in order.getInventory()){
+				if (item["inventoryItemId"] in matchingInventory){
+
+					//increment counter if items in order is less than that of inventory
+					if (item["quantity"] > matchingInventory[item["inventoryItemId"]].getQuantity()){
+						order.setStatus("Invalid");
+						return;
+					}
 				}
 			}
+			order.setStatus("Looking for Driver");
 
-			//Algorithm for checking whether an individual order can be fulfilled or not
-			if (counter == this.orders.length){
-				this.statusList.push("Looking for Driver");
-				this.updateInventory(gsinv, this.orders[i].orderitems);
-			}else{
-				this.statusList.push("Invalid");
-			}
+			//update actual quantity
+			this.updateInventory(order);
 		}
-		//Send notification to all orders
-		this.notifyOrders(this.statusList);
 	}
-
+	
 	/*If the order can be fulfilled, update store inventory by decrementing 
 	 * store inventory items
 	 */
-	updateInventory(gsinv, orditems){
-		for (var gskey in gsinv) {
-			for (var ordkey in orditems){
-				if (gskey == ordkey){
-					if ((gsinv[gskey] >= orditems[ordkey]) && (gsinv[gskey] != 0)){
-						gsinv[gskey] = gsinv[gskey] - orditems[ordkey];
-					}
-				}				
-			}
+	updateInventory(order){
+		for(var orditem in order.getInventory()){
+			const gs = this.globalInventory[order.getGroceryId()];
+			gs[orditem].setQuantity(gs[orditem].getQuantity() - order.getInventory()[orditem]["quantity"]);	
 		}
 	}
 
+	// outputToConsole(order){
+	// 	console.log("Order Id " + order.getOrderId() + ", Status Update: " + order.getStatus());
+	// }
 }
+

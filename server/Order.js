@@ -6,23 +6,34 @@ class Order {
 
     constructor(orderRef) {
         this.orderId = orderRef.orderId
-        this.progressStatus = orderRef.status;
+
+        //changed name 
+        this.status = orderRef.status;
+
         this.foodBankId = orderRef.foodBankId;
         this.groceryId = orderRef.groceryId;
-        this.inventoryItems = {};
+
+        //this has been changed; this is a list
+        this.inventoryItems = {} 
+        
+        this.parseItems(orderRef.inventory);
+        
+       
         this.timePlaced = Date(orderRef.time);
 
         this.driverId = {};
-
-        this.parseItems(orderRef.inventoryItems);
     }
 
-    setProgressStatus(newStatus) {
-        this.progressStatus = newStatus;
+    getOrderId(){
+        return this.orderId;
     }
 
-    getProgressStatus() {
-        return this.progressStatus;
+    setStatus(newStatus) {
+        this.status = newStatus;
+    }
+
+    getStatus() {
+        return this.status;
     }
 
     getDriver(driverId) {
@@ -57,9 +68,14 @@ class Order {
         return this.inventoryItems[itemId];
     }
 
+    //added because it wasn't available
+    getInventory(){
+        return this.inventoryItems;
+    }
+
     parseItems(itemsList) { // who parses itemsJSON into Items?
         itemsList.forEach(item => {
-            this.inventoryItems[item.name] = item
+            this.inventoryItems[item.inventoryItemId] = item
         });
     }
 
@@ -111,7 +127,6 @@ class Order {
         }
     }
 
-
     notifyDrivers(context) { // push notification
         if (this.driverId.length !== 0) {
             this.driverId.forEach(driver => {
@@ -157,4 +172,3 @@ class Order {
     // End of Observer duties
 }
 
-module.export = Order;

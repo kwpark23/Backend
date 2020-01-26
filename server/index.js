@@ -1,9 +1,18 @@
 const functions = require('firebase-functions');
+const express = require('express');
+const Order = require('./Order');
 
-// Create and Deploy Your First Cloud Functions
-// https://firebase.google.com/docs/functions/write-firebase-functions
+// General request handler
+var foodBankFunctions = express();
 
-exports.helloWorld = functions.https.onRequest((request, response) => {
- response.send("Hello from Firebase!");
+// Adds a handler for POST requests to '/foodBank/placeOrder'
+foodBankFunctions.post('/placeOrder', (request, response) => {
+    var body = request.body;
+    //Create a new Order object
+    const order = new Order(body);
+    //ToDo something with the order here
+    response.status(200).send("Order Received");
 });
 
+// Handles quesquests on '/foodBank'
+exports.foodBank = functions.https.onRequest(foodBankFunctions);

@@ -1,8 +1,8 @@
-class Item {
+ class Item {
     constructor(itemRef) {
         this.inventoryItemId = itemRef.inventoryItemId;
         this.name = itemRef.name;
-        this.qty = itemRef.quantity;
+        this.quantity = itemRef.quantity;
         this.expiryDate = Date(itemRef.expiryDate);
         this.groceryStoreId = itemRef.groceryStoreId
     }
@@ -16,7 +16,11 @@ class Item {
     }
 
     getQuantity() {
-        return this.qty;
+        return this.quantity;
+    }
+
+    setQuantity(quantity){
+        this.quantity = quantity;
     }
 
     getExpiryDate() {
@@ -28,4 +32,4 @@ class Item {
     }
 }
 
-module.export = Item;
+
