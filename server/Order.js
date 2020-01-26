@@ -140,7 +140,7 @@ class Order {
 
     addDriver(driver) { // adds observer
         if (this.isDriverValid(driver)) {
-            this.driverId[driver.orderId] = driver;
+            this.driverId[driver.driverId] = driver;
             console.log("Driver added.")
         } else {
             console.log("Can't assign driver" + error);
@@ -166,7 +166,7 @@ class Order {
     // Beginning of Observer duties
     updateStatus(newStatus) {
         // update properties in response to changes in Inventory
-        order.setProgressStatus(newStatus);
+        this.setProgressStatus(newStatus);
     }
 
     // End of Observer duties
