@@ -1,8 +1,11 @@
+const admin = require("firebase-admin");
 const functions = require('firebase-functions');
 const express = require('express');
 const Order = require('./Order');
 var groceryStores = {};
-var gsDB = firebase.database();
+
+admin.initializeApp(functions.config().firebase);
+var gsDB = admin.firestore();
 
 // General request handler
 var foodBankFunctions = express();
