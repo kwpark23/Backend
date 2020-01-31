@@ -10,7 +10,9 @@ class OrderProcessor {
         if (order.status !== 'Invalid') {
             this.addOrderToDict(order);
             console.log("Order created")
+            return true
         }
+        return false;
     }
 
     addOrderToDict(order) {
@@ -37,5 +39,6 @@ class OrderProcessor {
             console.log("Driver removed");
         }
     }
-
 }
+
+exports.modules = OrderProcessor;

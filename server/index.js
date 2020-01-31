@@ -2,7 +2,13 @@ const admin = require("firebase-admin");
 const functions = require('firebase-functions');
 const express = require('express');
 const Order = require('./Order');
+const OrderProcessor = require('./OrderProcessor').default;
+const GroceryStoreService = require('./GroceryStoreService');
+
 var groceryStores = {};
+var processor = new OrderProcessor();
+var groceryStoreServ = new GroceryStoreService(groceryStores);
+
 
 admin.initializeApp(functions.config().firebase);
 var gsDB = admin.firestore();
@@ -13,10 +19,13 @@ var foodBankFunctions = express();
 // Adds a handler for POST requests to '/foodBank/placeOrder'
 foodBankFunctions.post('/placeOrder', (request, response) => {
     var body = request.body;
+
     //Create a new Order object
     const order = new Order(body);
-    //ToDo something with the order here
-    response.status(200).send("Order Received");
+
+    if (processor.processOrder(order, groceryStoreServ)) {
+        response.status(200).send("Order Received");
+    }
 });
 
 // Handles quesquests on '/foodBank'
