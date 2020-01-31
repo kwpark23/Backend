@@ -2,7 +2,7 @@ const assert = require('assert');
 import Item from '../server/Item';
 import Order from '../server/Order';
 import GroceryStoreService from '../server/GroceryStoreService';
-import MainServer from '../server/MainServer';
+import OrderProcessor from '../server/OrderProcessor';
 
 // Test Data
 let Apple = new Item({
@@ -50,7 +50,7 @@ let gs = GroceryStoreService(inventory);
 
 let myOrder = new Order(order);
 
-const main = new MainServer();
+const main = new OrderProcessor();
 
 // Tests
 try { // check new main instance is empty
