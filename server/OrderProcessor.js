@@ -1,4 +1,4 @@
-class MainServer {
+class OrderProcessor {
     constructor() {
         this.activeOrder = {};
         this.activeDriver = {};
