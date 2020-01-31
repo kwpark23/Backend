@@ -13,9 +13,6 @@ var groceryStoreServ = new GroceryStoreService(groceryStores);
 admin.initializeApp(functions.config().firebase);
 var gsDB = admin.firestore();
 
-admin.initializeApp(functions.config().firebase);
-var gsDB = admin.firestore();
-
 // General request handler
 var foodBankFunctions = express();
 
