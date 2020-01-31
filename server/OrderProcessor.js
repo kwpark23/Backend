@@ -41,4 +41,4 @@ class OrderProcessor {
     }
 }
 
-exports.modules = OrderProcessor;
+module.exports = OrderProcessor;
