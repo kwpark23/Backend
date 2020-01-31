@@ -4,7 +4,7 @@ class MainServer {
         this.activeDriver = {};
     }
 
-    addOrderToDict(order, gs) {
+    processOrder(order, gs) {
         gs.updateStatus(order);
 
         if (order.status === 'Invalid') {
@@ -14,6 +14,10 @@ class MainServer {
             this.activeOrder[order.orderId] = order;
             console.log("Order created")
         }
+    }
+
+    addOrderToDict(order) {
+        this.activeOrder[order.orderId] = order;
     }
 
     addDriverToDict(driver) {
