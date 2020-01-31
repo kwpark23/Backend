@@ -7,11 +7,8 @@ class MainServer {
     processOrder(order, gs) {
         gs.updateStatus(order);
 
-        if (order.status === 'Invalid') {
-            this.removeOrderFromDict(order);
-            console.log("Order Rejected");
-        } else {
-            this.activeOrder[order.orderId] = order;
+        if (order.status !== 'Invalid') {
+            this.addOrderToDict(order);
             console.log("Order created")
         }
     }
