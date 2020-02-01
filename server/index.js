@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const functions = require('firebase-functions');
 const express = require('express');
 const Order = require('./Order');
-const OrderProcessor = require('./OrderProcessor').default;
+const OrderProcessor = require('./OrderProcessor');
 const GroceryStoreService = require('./GroceryStoreService');
 
 var groceryStores = {};
