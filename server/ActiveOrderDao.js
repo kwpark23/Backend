@@ -1,5 +1,5 @@
 /* eslint-disable promise/always-return */
-class ActiveOrdersDAO {
+class ActiveOrdersDao {
     constructor(gsDB) {
         this.gsDB = gsDB;
     }
@@ -44,7 +44,7 @@ class ActiveOrdersDAO {
         let matchingOrders = [];
         let currCapacity = driver.capacity;
         let ordersRef = this.gsDB.collection('ActiveOrders');
-        
+
         ordersRef.get().then(snapshot => {
             snapshot.forEach(order => {
                 console.log(order.id, '=>', order.data());
@@ -93,4 +93,4 @@ class ActiveOrdersDAO {
     }
 }
 
-module.exports = ActiveOrdersDAO;
+module.exports = ActiveOrdersDao;
