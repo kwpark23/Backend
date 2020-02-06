@@ -5,7 +5,7 @@ const Order = require('./Order');
 const OrderProcessor = require('./OrderProcessor');
 const GroceryStoreService = require('./GroceryStoreService');
 const EdiOrder = require('./EdiOrder');
-
+const GroceryStoreDao = require('./GroceryStoreDao');
 var groceryStores = {};
 var processor = new OrderProcessor();
 var groceryStoreServ = new GroceryStoreService(groceryStores);
@@ -45,7 +45,6 @@ var groceryStoreFunctions = express();
 groceryStoreFunctions.post('/sendUser', (request, response) => {
     
     var userInfo = request.body;
-
     //TODO parse userInfo and register grocery store
     groceryStores[userInfo.storeId] = userInfo;
     
@@ -65,6 +64,16 @@ groceryStoreFunctions.post('/inventoryUpdate',(request, response) =>{
     
     response.status(200).send("Inventory updated in Firestore");
 });
+
+
+groceryStoreFunctions.post('/checkOrderValid', (request, response) => {
+    
+    var order = new Order(request.body);
+    var gsDao = new GroceryStoreDao();
+    gsDao.isOrderValid(gsDB, order);
+
+    response.status(200).send("Checked order validity");
+})
 
 
 //verify order has been picked up 
