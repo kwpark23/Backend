@@ -15,6 +15,11 @@ var processor = new OrderProcessor();
 var groceryStoreService = new GroceryStoreService(groceryStores);
 var groceryStoreDao = new GroceryStoreDao(gsDB)
 
+var groceryStores = {};
+var driverQuery = gsDB.collection('driver');
+var processor = new OrderProcessor(driverQuery);
+var groceryStoreServ = new GroceryStoreService(groceryStores);
+
 /*******************Food Bank EndPoint *************************/
 const app = express();
 
