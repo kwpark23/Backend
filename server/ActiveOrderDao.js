@@ -42,7 +42,7 @@ class ActiveOrdersDao {
 
     findMatchingActiveOrders(driver) {
         let matchingOrders = [];
-        let currCapacity = driver.capacity;
+        let currCapacity = driver.getCapacity();
         let ordersRef = this.gsDB.collection('ActiveOrders');
 
         ordersRef.get().then(snapshot => {
