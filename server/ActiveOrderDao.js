@@ -6,7 +6,7 @@ class ActiveOrdersDao {
 
     updateActiveOrderStatus(orderId, newStatus) {
         //get order from db using orderId
-        let orderRef = this.gsDB.collection('ActiveOrdes').doc(String(orderId));
+        let orderRef = this.gsDB.collection('ActiveOrders').doc(String(orderId));
         //modify order status
         return orderRef.update({
             "status": newStatus
@@ -26,17 +26,13 @@ class ActiveOrdersDao {
 
     removeFromActiveOrders(orderId) {
         //get all documents with orderid
-        let orderRef = this.gsDB.collection('ActiveOrdes').doc(String(orderId));
-        // eslint-disable-next-line promise/always-return
-        orderRef.get().then(snapshot => {
-                snapshot.forEach(doc => {
-                    console.log(doc.id, '=>', doc.data());
-                    // delete document
-                    doc.delete();
-                });
+        let orderRef = this.gsDB.collection('ActiveOrders').doc(String(orderId));
+
+        orderRef.delete().then(() => {
+                console.log("Order " + orderId + "deleted");
             })
             .catch(err => {
-                console.log(orderId + " doesn't exists", err);
+                console.log("Failed to remove order " + orderId, err);
             });
     }
 
@@ -77,10 +73,10 @@ class ActiveOrdersDao {
                 console.log('Error getting documents', err);
             });
 
-        return getKeyUnique(dbKeys);
+        return _getKeyUnique(dbKeys);
     }
 
-    getKeyUnique(listOfKeys) {
+    _getKeyUnique(listOfKeys) {
         //return key if unique; otherwise recurse
         let key = Math.ceil(Math.random() * (10000));
 
