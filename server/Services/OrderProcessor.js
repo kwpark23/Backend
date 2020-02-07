@@ -3,12 +3,23 @@ const Driver = require("../Models/Driver");
 const GroceryStoreDao = require("../DataAccessObjects/GroceryStoreDao");
 
 class OrderProcessor {
-    constructor(driverQuery, orderQuery, groceryQuery, activeOrderDao, groceryStoreDao) {
+    constructor(driverQuery, orderQuery, groceryQuery, activeOrderDao, groceryStoreDao, driverDao) {
         this.initDriverListener(driverQuery);
         this.initOrderListener(orderQuery, groceryQuery)
         this.activeOrderDao = activeOrderDao;
-        this.GroceryStoreDao = groceryStoreDao;
+        this.groceryStoreDao = groceryStoreDao;
+        this.driverDao = driverDao;
     } 
+
+    processOrder(order) {
+        if (this.groceryStoreDao.isOrderValid(order)) {
+            let validDrivers = this.driverDao.findAllValidDrivers(order);
+            order.notifyDriver(validDrivers);
+            this.activeOrderDao.addToActiveOrders(order);
+        } else {
+            console.log("Order is invalid");
+        }
+    }
 
     initDriverListener(driverQuery) {
         // Construct a listener for driver statuses
@@ -21,7 +32,7 @@ class OrderProcessor {
                 // Update the orders if the driver is Available
                 if (driver.status === Driver.driverStates.AVAILABLE) {
                     // Find orders that the driver can deliver and send
-                    notifyDriver(driver, ActiveOrderDao.findMatchingActiveOrders(driver));
+                    notifyDriver(driverObj, this.activeOrderDao.findMatchingActiveOrders(driverObj));
                 }
             });
         });
@@ -59,7 +70,7 @@ class OrderProcessor {
 
     notifyDriver(driver, orders) {
         orders.forEach(order => {
-            order.notifyDriver(driver)
+            order.notifyDriver([driver])
         });
     }
 }
