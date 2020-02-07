@@ -1,38 +1,37 @@
-class GroceryStoreDao{
-    constructor(){}
+class GroceryStoreDao {
+    constructor(gsDB){
+        this.gsDB = gsDB;
+    }
 
-    isOrderValid(gsDB, order){
-        //This is a list
-        var orderInventory = order.inventoryItems;
-        console.log("This is order inventory:", orderInventory);
-
-        let gsRef = gsDB.collection("GroceryStores").doc(order.groceryId).collection("InventoryCollection").doc("Items");
-        for (const [key, value] of Object.entries(orderInventory)){
-            let queryById = gsRef.get().then(doc => {
-                if (!doc.exists){
-                    console.log("No such document!");
-                    return null;
-                }else{
-                    var itemInfo = doc.data();
-                    console.log("This is item:", orderInventory[key]);
-                    console.log("This is the quantity of " + orderInventory[key]["name"] + ":" + orderInventory[key]["quantity"])
-                    //console.log(itemInfo);
-                    console.log("This is doc data: " + itemInfo);
-                    return null;
-                }
-            }).catch(err => {
-                console.log('Error getting document', err);
-                return null;
-            })
+    // for updating inventory in firestore
+    newInventoryToGroceryStoreData(newEdiOrder){
+        //write to the database new inventory
+        if(newEdiOrder.inventory === undefined || newEdiOrder.inventory.length == 0){
+            console.log("Empty Order");
+            return null;
         }
+
+        var stringInventoryData = JSON.stringify(newEdiOrder.inventory);
+        var json_inventory = JSON.parse(stringInventoryData);
+        var batch = this.gsDB.batch();
+        var myKeyRef = this.gsDB.collection("GroceryStores").doc(`${newEdiOrder.groceryId}`).collection("InventoryCollection").doc("Items");
+        batch.set(myKeyRef, json_inventory);
+
+        batch.commit().then( function() {
+            console.log("Success!");
+            return null;
+        }).catch((err) => {
+            console.log('Error getting documents', err);
+            return err;
+        });
     }
 
-    updateStoreInventoryQuantity(){
-
+    writeGroceryStoreData(storeId, companyName, location, storeNumber) {
+        this.gsDB.collection('GroceryStores').doc(`${storeId}`).set({
+        companyName: companyName,
+        location: location,
+        storeNumber: storeNumber},
+        {merge: true});
     }
-
-
-
 }
-
 module.exports = GroceryStoreDao;
