@@ -2,9 +2,10 @@ const ActiveOrderDao = require('./ActiveOrderDao');
 const Driver = require('./Driver');
 
 class OrderProcessor {
-    constructor(driverQuery) {
+    constructor(driverQuery, activeOrderDao) {
         this.initDriverListener(driverQuery);
-    }
+        this.activeOrderDao = activeOrderDao;
+    } 
 
     initDriverListener(driverQuery) {
         // Construct a listener for driver statuses
