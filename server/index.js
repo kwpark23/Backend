@@ -6,13 +6,15 @@ const OrderProcessor = require('./OrderProcessor');
 const GroceryStoreService = require('./GroceryStoreService');
 const EdiOrder = require('./EdiOrder');
 const GroceryStoreDao = require('./GroceryStoreDao');
+const ActiveOrdersDao = require('./ActiveOrdersDao');
 
 // Initialize App
 admin.initializeApp(functions.config().firebase);
 var gsDB = admin.firestore();
 var groceryStores = {};
 var driverQuery = gsDB.collection('driver');
-var processor = new OrderProcessor(driverQuery);
+var activeOrdersDao = new ActiveOrdersDao();
+var processor = new OrderProcessor(driverQuery, activeOrdersDao);
 var groceryStoreService = new GroceryStoreService(groceryStores);
 var groceryStoreDao = new GroceryStoreDao(gsDB);
 
@@ -21,7 +23,11 @@ const app = express();
 
 app.post('/foodBank/placeOrder', (request, response) => {
     var body = request.body;
+    let orderId = activeOrdersDao.generateUniqueKey();
     order = new Order(body);
+    
+    order.setOrderId(orderId);
+
     if (processor.processOrder(order,  groceryStoreService)) {
         response.status(200).send("Order Received");
     }
