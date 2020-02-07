@@ -11,7 +11,7 @@ const OrderStates = {
 class Order {
 
     constructor(orderRef) {
-        this.orderId = orderRef.orderId
+        this.orderId;
         this.foodBankId = orderRef.foodBankId;
         this.groceryId = orderRef.groceryId;
         this.inventoryItems = {};
@@ -22,6 +22,8 @@ class Order {
     }
 
     getOrderId() { return this.orderId; }
+
+    setOrderId(orderId) { this.orderId = orderId;}
 
     setStatus(newStatus) { 
         switch(newStatus){
