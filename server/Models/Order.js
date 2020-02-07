@@ -6,7 +6,7 @@ const OrderStates = {
     DROP_OFF_IN_PROGRESS: "Driver has picked up inventory from the grocery store.",
     DELIVERED: "Driver has dropped off the inventory at the food bank",
     INVALID: "Order is invalid"
-  };
+};
 
 class Order {
 
@@ -23,10 +23,10 @@ class Order {
 
     getOrderId() { return this.orderId; }
 
-    setOrderId(orderId) { this.orderId = orderId;}
+    setOrderId(orderId) { this.orderId = orderId; }
 
-    setStatus(newStatus) { 
-        switch(newStatus){
+    setStatus(newStatus) {
+        switch (newStatus) {
             case "Looking For Diver":
                 this.status = OrderStates.LOOKING_FOR_DRIVER;
                 break;
@@ -46,8 +46,8 @@ class Order {
                 this.status = OrderStates.DELIVERED;
                 break;
             default:
-            this.status = OrderStates.INVALID;
-        }   
+                this.status = OrderStates.INVALID;
+        }
     }
 
     getStatus() { return this.status; }
@@ -131,5 +131,7 @@ class Order {
     }
 }
 
-module.exports =  Order;
-module.exports =  OrderStates;
+module.exports = {
+    Order,
+    OrderStates
+};

@@ -5,7 +5,7 @@ class OrderProcessor {
     constructor(driverQuery, activeOrderDao) {
         this.initDriverListener(driverQuery);
         this.activeOrderDao = activeOrderDao;
-    } 
+    }
 
     initDriverListener(driverQuery) {
         // Construct a listener for driver statuses
@@ -31,4 +31,6 @@ class OrderProcessor {
     }
 }
 
-module.exports = OrderProcessor;
+module.exports = {
+    OrderProcessor
+};

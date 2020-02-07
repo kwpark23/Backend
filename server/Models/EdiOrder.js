@@ -1,11 +1,16 @@
 class EdiOrder {
-	constructor(jsonBody){
+    constructor(jsonBody) {
         this.ediOrderNumber = jsonBody.ediOrderNumber;
         this.groceryId = jsonBody.groceryId;
 
-        //This is just nested json doc
-        this.inventory = jsonBody.inventory; 
+        //Convert list of JSON objects to map of JSON
+        this.inventory = {};
+        jsonBody.inventory.forEach(item => {
+            this.inventory[item.inventoryItemId] = item;
+        });
     }
 }
 
-module.exports = EdiOrder;
+module.exports = {
+    EdiOrder
+};
