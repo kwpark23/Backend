@@ -67,6 +67,11 @@ class GroceryStoreDao {
             return key;
         }
     }
+    updateGroceryStoreData(storeID, productID, newquantity) {
+        data = {}
+        data[storeID + "." + productID] = newquantity
+        this.gsDB.collection('GroceryStores').doc(`${storeID}`).collection('InventoryCollection').doc('Items').update(data);
+    }
 }
 module.exports = {
     GroceryStoreDao
