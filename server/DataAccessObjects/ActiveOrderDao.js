@@ -1,5 +1,5 @@
 /* eslint-disable promise/always-return */
-class ActiveOrdersDao {
+class ActiveOrderDao {
     constructor(gsDB) {
         this.gsDB = gsDB;
     }
@@ -29,8 +29,8 @@ class ActiveOrdersDao {
         let orderRef = this.gsDB.collection("ActiveOrders").doc(String(orderId));
 
         orderRef.delete().then(() => {
-                console.log("Order " + orderId + "deleted");
-            })
+            console.log("Order " + orderId + "deleted");
+        })
             .catch(err => {
                 console.log("Failed to remove order " + orderId, err);
             });
@@ -49,9 +49,9 @@ class ActiveOrdersDao {
                 }
             });
         })
-        .catch(err => {
-            console.log("Error getting active orders", err);
-        });
+            .catch(err => {
+                console.log("Error getting active orders", err);
+            });
 
         return matchingOrders;
     }
@@ -62,18 +62,18 @@ class ActiveOrdersDao {
         //get all keys in firebase and check they don"t coincide with key
         let ordersRef = this.gsDB.collection("ActiveOrders");
         console.log(ordersRef);
-        
+
         ordersRef.get().then(snapshot => {
-                snapshot.forEach(doc => {
-                    console.log(doc.id, "=>", doc.data());
-                    dbKeys.push(doc.id);
-                });
-            })
+            snapshot.forEach(doc => {
+                console.log(doc.id, "=>", doc.data());
+                dbKeys.push(doc.id);
+            });
+        })
             .catch(err => {
                 console.log("Error getting documents", err);
             });
 
-        return _getKeyUnique(dbKeys);
+        return this._getKeyUnique(dbKeys);
     }
 
     _getKeyUnique(listOfKeys) {
@@ -81,7 +81,7 @@ class ActiveOrdersDao {
         let key = Math.ceil(Math.random() * (10000));
 
         if (listOfKeys.includes(key)) {
-            return getKeyUnique(listOfKeys);
+            return this._getKeyUnique(listOfKeys);
         } else {
             console.log(key);
             return key;
@@ -89,4 +89,6 @@ class ActiveOrdersDao {
     }
 }
 
-module.exports = ActiveOrdersDao;
+module.exports = {
+    ActiveOrderDao
+};
