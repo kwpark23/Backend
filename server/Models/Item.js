@@ -1,4 +1,4 @@
- class Item {
+class Item {
     constructor(itemRef) {
         this.inventoryItemId = itemRef.inventoryItemId;
         this.ediOrderNumber = itemRef.ediOrderNumber;
@@ -12,7 +12,7 @@
         return this.inventoryItemId;
     }
 
-    getEdiOrderNumber(){
+    getEdiOrderNumber() {
         return this.ediOrderNumber;
     }
 
@@ -24,7 +24,7 @@
         return this.quantity;
     }
 
-    setQuantity(quantity){
+    setQuantity(quantity) {
         this.quantity = quantity;
     }
 
@@ -37,5 +37,7 @@
     }
 }
 
-module.exports = Item;
+module.exports = {
+    Item
+};
 
