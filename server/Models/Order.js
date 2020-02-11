@@ -1,3 +1,5 @@
+const Item = require("./Item");
+
 const OrderStates = {
     LOOKING_FOR_DRIVER: "Looking For Diver",
     UNABLE_TO_COMPLETE: "Order is unable to completed",
@@ -16,10 +18,15 @@ class Order {
         this.groceryId = orderRef.groceryId;
         this.inventoryItems = {};
         this.timePlaced = Date(orderRef.time);
+        this.totalQuantity = 0;
+        this.driverId = {};  
+        this.ediOrderNumber = orderRef.ediOrderNumber;
 
         this.parseItems(orderRef.inventory);
         this.setStatus(orderRef.status)
     }
+
+    getTotalQuantity(){ return this.totalQuantity; }
 
     getOrderId() { return this.orderId; }
 
@@ -70,54 +77,17 @@ class Order {
 
     parseItems(itemsList) {
         itemsList.forEach(item => {
-            this.inventoryItems[item.inventoryItemId] = item
+            this.inventoryItems[item.inventoryItemId] = new Item.Item(item, this.ediOrderNumber)
+            this.totalQuantity += Number(item.quantity); 
         });
     }
     notifyFoodBank(foodBankURL) {
-        try {
-            // let fbServer = new XMLHttpRequest();
-            // fbServer.open("POST", foodBankURL, true);
-            // fbServer.setRequestHeader("Content-Type", "application/json");
-            // fbServer.send(JSON.stringify({
-            //     "orderId": this.orderId,
-            //     "status": this.progressStatus
-            // }))
-
-            // fbServer.onreadystatechange = function () {
-            //     if (this.status === 200) {
-            //         console.log("200");
-            //     }
-            // }
-
-            // fbServer.send();
-            console.log("Food Bank Notified 200")
-
-        } catch (error) {
-            console.log("Can't notify entity.")
-        }
+        console.log("Food Bank Notified 200")
     }
 
     notifyGroceryStore(groceryStoreURL) {
-        try {
-            // let gsServer = new XMLHttpRequest();
-            // gsServer.open("POST", groceryStoreURL, true);
-            // gsServer.setRequestHeader("Content-Type", "application/json");
-            // gsServer.send(JSON.stringify({
-            //     "orderId": this.orderId,
-            //     "status": this.progressStatus
-            // }))
+        console.log("Grocery Store Notified 200");
 
-            // gsServer.onreadystatechange = function () {
-            //     if (this.status === 200) {
-            //         console.log("200");
-            //     }
-            // }
-
-            // gsServer.send();
-            console.log("Grocery Store Notified 200");
-        } catch (error) {
-            console.log("Can\t notify entity.")
-        }
     }
 
     // Push notifications based on an array of Driver IDs
