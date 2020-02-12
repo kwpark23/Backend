@@ -1,8 +1,24 @@
 class FoodBankModel{
-    contructor(FoodBankID, fbName, location, locationNumber){
-        this.FoodBankID= FoodBankID,
-        this.fbName = fbName,
-        this.location=location,
-        this.locationNumber=locationNumber;
+    contructor(foodbankRef){
+        this.foodBankID= foodbankRef.foodBankID,
+        this.fbName = foodbankRef.fbName,
+        this.fblocation=foodbankRef.fblocation,
+        this.fblocationNumber=foodbankRef.fblocationNumber;
     }
+    setFoodBankId(foodBankID) { this.foodBankID = foodBankID; }
+    
+    getFoodBankId() { return this.foodBankID; }
+    
+    setFoodBankName(fbName) { this.fbName=fbName; }
+    
+    getFoodBankName(){ return this.fbName; }
+    
+    setFoodBankLocation(fblocation) { this.fblocation=fblocation; }
+    
+    getFoodBankLocation(){ return this.fblocation; }
+    
+    setFoobBankLocationId(fblocationNumber){this.fblocationNumber=fblocationNumber;}
+    
+    getFoodBankLocationId(){ return this.fblocationNumber; }
 }
+
