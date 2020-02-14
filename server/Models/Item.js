@@ -5,7 +5,16 @@ class Item {
         this.name = itemRef.name;
         this.quantity = itemRef.quantity;
         this.expiryDate = Date(itemRef.expiryDate);
-        this.groceryStoreId = itemRef.groceryStoreId
+        this.groceryStoreId = itemRef.groceryStoreId;
+        this.edibleByDate;
+    }
+
+    setEdibleByDate(date) {
+        this.edibleByDate = Date(date);
+    }
+
+    getEdibleByDate() {
+        return this.edibleByDate;
     }
 
     getInventoryItemId() {
