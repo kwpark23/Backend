@@ -10,7 +10,10 @@ class DriverDao {
             snapshot.forEach(doc => {
                 activeOrder.notifyDriver(doc.data()["driverId"])
             });
-        })
+            return true;
+        }).catch(err=>{
+            console.log(err);
+        });
     }
 }
 module.exports = {
