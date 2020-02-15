@@ -10,15 +10,30 @@ class Driver {
     constructor(driverRef) {
         this.driverId = driverRef.driverId;
         this.capacity = driverRef.capacity;
-        this.defaultLocation = driverRef.defaultLocation;
+        this.defaultRegion = driverRef.defaultRegion;
+        this.name = driverRef.name;
+        this.points = driverRef.points;
+        this.setCompletedOrderIds(driverRef.completedOrderIds);
         this.setDriverStatus(driverRef.status);
     }
+
+    setDriverId(driverId){ this.driverId = driverId }
 
     getDriverId() { return this.driverId; }
     getCapacity() { return this.capacity; }
 
-    setDefaultLocation(defaultLocation) { this.defaultLocation = defaultLocation; }
-    getDefaultLocation() { return this.defaultLocation; }
+    setDefaultLocation(defaultRegion) { this.defaultRegion = defaultRegion; }
+    getDefaultLocation() { return this.defaultRegion; }
+
+    getCompletedOrderIds(){ return this.completedOrderIds; }
+
+    setCompletedOrderIds(list){
+        if (typeof list == undefined) {
+            this.completedOrderIds = new Array();
+            console.log("this is inializaed list:", list);
+        }
+        this.completedOrderIds = list;
+    }
 
     setDriverStatus(newStatus) {
         switch (newStatus) {
