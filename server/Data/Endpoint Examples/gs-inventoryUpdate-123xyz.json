@@ -2,19 +2,23 @@
     "ediOrderNumber": "123xyz",
     "groceryId": 3229,
     "inventoryItems": {
-        "333": {
+        "332": {
             "inventoryItemId": 333,
             "name": "Orange",
             "quantity": 20,
-            "expiryDate": "20-03-28",
-            "groceryStoreId": 1
+            "EDIOrderNumber": "124AZ",
+            "expiryDate": "2020-03-28",
+            "groceryStoreId": 1,
+            "edibleByDate": "2020-02-03"
         },
         "334": {
             "inventoryItemId": 334,
             "name": "Apple",
             "quantity": 20,
-            "expiryDate": "20-03-20",
-            "groceryStoreId": 1
+            "EDIOrderNumber": "124AZ",
+            "expiryDate": "2020-03-20",
+            "groceryStoreId": 1,
+            "edibleByDate": "2020-02-03"
         }
     }
 }
