@@ -22,6 +22,7 @@ var driverDao = new DriverDao.DriverDao(gsDB);
 
 var processor = new OrderProcessor.OrderProcessor(gsDB, activeOrdersDao, groceryStoreDao, driverDao);
 var groceryStoreService = new GroceryStoreService.GroceryStoreService(groceryStores);
+const startDate = new Date(Date.now()).toDateString();
 
 /*******************Food Bank EndPoint *************************/
 const app = express();
@@ -55,6 +56,7 @@ app.post("/groceryStore/inventoryUpdate", (request, response) => {
     var jsonBody = request.body;
     var newEdiOrder = new EdiOrder.EdiOrder(jsonBody);
     groceryStoreDao.newInventoryToGroceryStoreData(newEdiOrder);
+    checkDate();
     response.status(200).send("Inventory updated in Firestore");
 });
 
@@ -72,3 +74,39 @@ app.post("/driver/driverStatusUpdate", (request, response) => {
 });
 
 exports.app = functions.https.onRequest(app);
+
+/**********************Timers*************************/
+function checkDate() {
+    let today = new Date(Date.now()).toDateString();
+
+    if (today !== startDate) {
+        pruneInventoryListener(today);
+    }
+}
+
+function pruneInventoryListener(day) {
+    // get inventory collection
+    let stores = this.gsDB.collection("GroceryStores");
+    this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).collection("InventoryCollection").doc("Items");
+
+    //loop through each doc and check if the current date is less than or equal to ediblebydate
+    stores.onSnapshot(storesSnapshot => {
+        storesSnapshot.get().forEach(store => {
+            // Get the driver data
+            console.log(store);
+            let inventory = store.collection("InventoryCollection").doc("Items");
+
+            inventory.forEach(itemDoc => {
+                var item = new Item.Item(itemDoc);
+                itemEBD = item.getEdibleByDate();
+
+                if (itemEBD < day) {
+                    itemDoc.delete();
+                }
+
+            });
+
+        });
+    });
+
+}
