@@ -45,7 +45,9 @@ class GroceryStoreDao {
         var myKeyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).collection("InventoryCollection").doc("Items");
         myKeyRef.set(json_inventory,
             { merge: true });
-        return this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).update({ tmp: FieldValue.delete() });
+        return this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).update({ tmp: FieldValue.delete() }).then(check => {
+            return true;
+        });
     }
 
     writeGroceryStoreData(companyName, location, storeNumber) {

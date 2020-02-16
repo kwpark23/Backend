@@ -63,7 +63,9 @@ app.post("/groceryStore/inventoryUpdate", (request, response) => {
     var jsonBody = request.body;
     var newEdiOrder = new EdiOrder.EdiOrder(jsonBody);
     groceryStoreDao.newInventoryToGroceryStoreData(newEdiOrder).then(write => {
-        checkDate();
+        if (write) {
+            checkDate();
+        }
     }).catch(err => { console.log(err) });
     response.status(200).send("Inventory updated in Firestore");
 });
@@ -87,9 +89,7 @@ exports.app = functions.https.onRequest(app);
 function checkDate() {
     let today = new Date(Date.now());
 
-    if (today > startTime) {
-        pruneInventoryListener(today);
-    }
+    pruneInventoryListener(today);
 }
 
 async function getStores() {
