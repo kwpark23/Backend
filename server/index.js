@@ -1,6 +1,8 @@
+/* eslint-disable promise/always-return */
 // Firebase Imports
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
+const FieldValue = admin.firestore.FieldValue;
 // Endpoint Imports
 const express = require("express");
 // Other Imports
@@ -11,6 +13,7 @@ const EdiOrder = require("./Models/EdiOrder");
 const GroceryStoreDao = require("./DataAccessObjects/GroceryStoreDao");
 const ActiveOrderDao = require("./DataAccessObjects/ActiveOrderDao");
 const DriverDao = require("./DataAccessObjects/DriverDao");
+const Item = require("./Models/Item");
 
 // Initialize App
 admin.initializeApp(functions.config().firebase);
@@ -22,8 +25,8 @@ var driverDao = new DriverDao.DriverDao(gsDB);
 
 var processor = new OrderProcessor.OrderProcessor(gsDB, activeOrdersDao, groceryStoreDao, driverDao);
 var groceryStoreService = new GroceryStoreService.GroceryStoreService(groceryStores);
-const startDate = new Date(Date.now()).toDateString();
-
+var startTime = new Date(Date.now());
+checkDate();
 /*******************Food Bank EndPoint *************************/
 const app = express();
 
@@ -55,8 +58,9 @@ app.post("/groceryStore/inventoryUpdate", (request, response) => {
     //receive data body that is an inventory from single grocery store
     var jsonBody = request.body;
     var newEdiOrder = new EdiOrder.EdiOrder(jsonBody);
-    groceryStoreDao.newInventoryToGroceryStoreData(newEdiOrder);
-    checkDate();
+    groceryStoreDao.newInventoryToGroceryStoreData(newEdiOrder).then(write => {
+        checkDate();
+    }).catch(err => { console.log(err) });
     response.status(200).send("Inventory updated in Firestore");
 });
 
@@ -77,36 +81,58 @@ exports.app = functions.https.onRequest(app);
 
 /**********************Timers*************************/
 function checkDate() {
-    let today = new Date(Date.now()).toDateString();
+    let today = new Date(Date.now());
 
-    if (today !== startDate) {
+    if (today > startTime) {
         pruneInventoryListener(today);
     }
 }
 
-function pruneInventoryListener(day) {
-    // get inventory collection
-    let stores = this.gsDB.collection("GroceryStores");
-    this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).collection("InventoryCollection").doc("Items");
-
-    //loop through each doc and check if the current date is less than or equal to ediblebydate
-    stores.onSnapshot(storesSnapshot => {
-        storesSnapshot.get().forEach(store => {
-            // Get the driver data
-            console.log(store);
-            let inventory = store.collection("InventoryCollection").doc("Items");
-
-            inventory.forEach(itemDoc => {
-                var item = new Item.Item(itemDoc);
-                itemEBD = item.getEdibleByDate();
-
-                if (itemEBD < day) {
-                    itemDoc.delete();
-                }
-
-            });
-
+async function getStores() {
+    let storesRef = await gsDB.collection("GroceryStores").get();
+    const storeIds = [];
+    try {
+        storesRef.forEach(doc => {
+            storeIds.push(doc.id);
         });
-    });
+    } catch (error) {
+        console.log("Error getting stores", error);
+    }
 
+    storesRef.forEach(doc => {
+        storeIds.push(doc.id);
+    });
+    return storeIds;
+}
+
+async function pruneInventoryListener(day) {
+    //get IDs of all stores in grocerySTores
+    storeIds = await getStores();
+    uniqueStores = [...new Set(storeIds)];
+    //loop through stores and update inventories
+    for (let index = 0; index < uniqueStores.length; index++) {
+        pruneInventory(uniqueStores[index]);
+    }
+}
+
+async function pruneInventory(id) {
+    let storeRef = await gsDB.collection("GroceryStores").doc(id).collection("InventoryCollection").doc("Items");
+    try {
+        storeRef.get().then(snapshot => {
+            let inventory = snapshot.data();
+            for (var key in inventory) {
+                let item = new Item.Item(inventory[key]);
+                let itemEBD = item.getEdibleByDate();
+
+                if (itemEBD < new Date(Date.now())) {
+                    delete inventory[key];
+                }
+            }
+            console.log(inventory);
+            gsDB.collection("GroceryStores").doc(id).collection("InventoryCollection").doc("Items").set(inventory);
+
+        }).catch(err => { console.log(err) })
+    } catch (error) {
+        console.log("Error getting inventory", error);
+    }
 }
