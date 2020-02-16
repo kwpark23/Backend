@@ -9,8 +9,12 @@ class EdiOrder {
 
     parseItems(inventoryItemsRef) {
         for (const [itemId, item] of Object.entries(inventoryItemsRef)) {
-            this.inventoryItems[itemId] = new Item.Item(item, this.ediOrderNumber)
+            this.inventoryItems[itemId] = new Item.Item(item, this.ediOrderNumber);
         }
+    }
+
+    getGroceryId() {
+        return this.groceryId;
     }
 }
 
