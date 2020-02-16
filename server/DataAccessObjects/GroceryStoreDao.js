@@ -47,6 +47,9 @@ class GroceryStoreDao {
             { merge: true });
         return this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).update({ tmp: FieldValue.delete() }).then(check => {
             return true;
+        }).catch(err => {
+            console.log("Could not delete field", err);
+            return false;
         });
     }
 
