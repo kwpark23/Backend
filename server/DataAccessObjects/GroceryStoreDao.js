@@ -1,5 +1,5 @@
 const Order = require("../Models/Order");
-
+const FieldValue = require("firebase-admin").firestore.FieldValue;
 class GroceryStoreDao {
     constructor(gsDB) {
         this.gsDB = gsDB;
@@ -41,9 +41,11 @@ class GroceryStoreDao {
         }
         var stringInventoryData = JSON.stringify(newEdiOrder.inventoryItems);
         var json_inventory = JSON.parse(stringInventoryData);
+        var keyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).set({ tmp: 0 });
         var myKeyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).collection("InventoryCollection").doc("Items");
         myKeyRef.set(json_inventory,
             { merge: true });
+        return this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).update({ tmp: FieldValue.delete() });
     }
 
     writeGroceryStoreData(companyName, location, storeNumber) {
