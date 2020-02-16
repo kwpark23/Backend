@@ -26,7 +26,11 @@ var driverDao = new DriverDao.DriverDao(gsDB);
 var processor = new OrderProcessor.OrderProcessor(gsDB, activeOrdersDao, groceryStoreDao, driverDao);
 var groceryStoreService = new GroceryStoreService.GroceryStoreService(groceryStores);
 var startTime = new Date(Date.now());
-checkDate();
+
+exports.pruneDaily = functions.pubsub.schedule('0 0 * * *').onRun((context) => {
+    checkDate();
+    return null;
+});
 /*******************Food Bank EndPoint *************************/
 const app = express();
 
