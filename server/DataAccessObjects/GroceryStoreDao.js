@@ -41,19 +41,12 @@ class GroceryStoreDao {
         }
         var stringInventoryData = JSON.stringify(newEdiOrder.inventoryItems);
         var json_inventory = JSON.parse(stringInventoryData);
-        //var keyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).set({ tmp: 0 });
         var myKeyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).collection("InventoryCollection").doc("Items");
         return myKeyRef.set(json_inventory,
             { merge: true }).then(check => { return true; }).catch(err => {
                 console.log("Could not add inventory", err);
                 return false;
             });
-        // return this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).update({ tmp: FieldValue.delete() }).then(check => {
-        //     return true;
-        // }).catch(err => {
-        //     console.log("Could not delete field", err);
-        //     return false;
-        // });
     }
 
     writeGroceryStoreData(companyName, location, storeNumber) {
@@ -100,7 +93,7 @@ class GroceryStoreDao {
         }
     }
 
-    /**********************Timers*************************/
+    /**********************Timer*************************/
 
     checkDate() {
         let today = new Date(Date.now());
