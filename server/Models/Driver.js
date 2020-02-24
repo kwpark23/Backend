@@ -17,7 +17,6 @@ class Driver {
         this.name = driverRef.name;
         this.points = driverRef.points;
         this.setCompletedOrderIds(driverRef.completedOrderIds);
-
         this.setDriverStatus(driverRef.status);
     }
 
