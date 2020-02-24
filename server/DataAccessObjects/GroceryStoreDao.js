@@ -40,6 +40,18 @@ class GroceryStoreDao {
         }
         var stringInventoryData = JSON.stringify(newEdiOrder.inventoryItems);
         var json_inventory = JSON.parse(stringInventoryData);
+        var storeRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId);
+        storeRef.get().then(doc => {
+            if (!doc.exists) {
+                console.log("Store doesn't exist");
+                return false;
+            }
+            console.log("Store exists");
+        }).catch(err => {
+            console.log("Error getting store", err);
+            return false;
+        })
+
         var myKeyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).collection("InventoryCollection").doc("Items");
         return myKeyRef.set(json_inventory,
             { merge: true }).then(check => { return true; }).catch(err => {
