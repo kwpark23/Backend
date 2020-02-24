@@ -12,6 +12,7 @@ const EdiOrder = require("./Models/EdiOrder");
 const GroceryStoreDao = require("./DataAccessObjects/GroceryStoreDao");
 const ActiveOrderDao = require("./DataAccessObjects/ActiveOrderDao");
 const DriverDao = require("./DataAccessObjects/DriverDao");
+const Driver = require("./Models/Driver");
 
 // Initialize App
 admin.initializeApp(functions.config().firebase);
@@ -70,14 +71,27 @@ app.post("/groceryStore/inventoryUpdate", (request, response) => {
 /*****************Driver EndPoint **********************/
 
 app.post("/driver/driverStatusUpdate", (request, response) => {
-    var orderId = request.body.orderId;
     var driverId = request.body.driverId;
     var updateDriverStatus = request.body.updateDriverStatus;
 
+    driverDao.updateDriverStatus(driverId, updateDriverStatus); 
     response.status(200).send("Driver Id: " + driverId +
-        "\n New Status: " + updateDriverStatus +
-        "\n For Order Id: " + orderId);
+        "\n New Status: " + updateDriverStatus);
 
 });
+
+app.post("/driver/updateUserAccount", (request, response) => {
+    var driver = new Driver.Driver(request.body);
+    let driverId = driverDao.generateUniqueKey();
+    driver.setDriverId(driverId);
+
+    //initalize driver object
+    driverDao.updateDriverAccount(driver);
+    
+     response.status(200).send("Driver Id: " + driver.driverId +
+        " created");
+
+});
+
 
 exports.app = functions.https.onRequest(app);
