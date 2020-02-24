@@ -55,6 +55,24 @@ class GroceryStoreService {
 	// outputToConsole(order){
 	// 	console.log("Order Id " + order.getOrderId() + ", Status Update: " + order.getStatus());
 	// }
+
+	initGroceryListener(groceryQuery){
+		groceryQuery.get().then(groceries =>{
+			return groceries.docs.forEach(inventory => {
+				this._initGroceryListener(groceryQuery.doc(inventory.ref.id))
+			})
+		})
+	}
+
+	_initGroceryListener(docGroceryQuery){
+		docGroceryQuery.onSnapShot(snpashot => {
+			console.log(snapshot.data())
+		})
+	}
+
+	addGroceryListener(groceryQuery){
+		this._initGroceryListener(groceryQuery)
+	}
 }
 
 module.exports = {
