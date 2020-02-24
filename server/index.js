@@ -45,7 +45,7 @@ app.post("/foodBank/placeOrder", (request, response) => {
 });
 
 /*****************Grocery Store EndPoint **********************/
-app.post("/groceryStore/sendUser", (request, response) => {
+app.post("/groceryStore/updateUserAccount", (request, response) => {
     var groceryUser = request.body;
     //TODO parse userInfo and register grocery store
     console.log(groceryUser.companyName)
