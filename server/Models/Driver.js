@@ -3,12 +3,15 @@ const DriverStates = {
     AVAILABLE: "Driver available to deliever an order",
     ACCEPTED: "Driver has accepted order",
     REJECTED: "Driver has rejected order",
-    CANCELLED: "Driver has cancelled order"
+    CANCELLED: "Driver has cancelled order",
+    UNAVAILABLE: "Driver unavailable to deliever an order"
 };
 
 class Driver {
     constructor(driverRef) {
-        this.driverId = driverRef.driverId;
+        if (driverRef.driverId !== null ){
+            this.driverId = driverRef.driverId;
+        }
         this.capacity = driverRef.capacity;
         this.defaultRegion = driverRef.defaultRegion;
         this.name = driverRef.name;
@@ -27,12 +30,11 @@ class Driver {
 
     getCompletedOrderIds(){ return this.completedOrderIds; }
 
-    setCompletedOrderIds(list){
-        if (typeof list == undefined) {
-            this.completedOrderIds = new Array();
-            console.log("this is inializaed list:", list);
+    setCompletedOrderIds(lst){
+        if (lst != undefined) {
+            this.completedOrderIds = lst;   
         }
-        this.completedOrderIds = list;
+        this.completedOrderIds = [];
     }
 
     setDriverStatus(newStatus) {
@@ -49,8 +51,11 @@ class Driver {
             case "Driver has cancelled order":
                 this.status = DriverStates.CANCELLED;
                 break;
+            default:
+                this.status = DriverStates.UNAVAILABLE;
         }
     }
+    
     getDriverStatus() { return this.status; }
 }
 module.exports = {

@@ -2,50 +2,30 @@ class DriverDao {
 
     constructor(gsDB) {
         this.gsDB = gsDB;
-        //this.driverDatabase = this.gsDB.collection("Drivers");
+
     }
 
     notifyAllValidDrivers(activeOrder) {
-        this.driverDatabase.where('capacity', '>=', activeOrder.getTotalQuantity()).get().then(snapshot => {
+        this.gsDB.collection("Drivers").where('capacity', '>=', activeOrder.getTotalQuantity()).get().then(snapshot => {
             snapshot.forEach(doc => {
                 activeOrder.notifyDriver(doc.data()["driverId"])
             });
         })
     }
 
-    createNewAccount(driver){
-        if (driver.getDriverId() == null){
-            var newId = this.generateUniqueKey();
-            driver.setDriverId(newId);
-        }
-
-        //this is required as new driver doesn't have any status yet and
-        //firebase doesn't allow data to be 'undefined'
-        if (driver.getDriverStatus() == null){
-            driver.setDriverStatus("Driver available to deliever an order");
-        }
-        
-        console.log("this is id:", driver.driverId);
-        console.log("this is name:", driver.name);
-        console.log("this is capacity:", driver.capacity);
-        console.log("this is points:", driver.points);
-        console.log("this is status:", driver.status);
-        console.log("this is defaultRegion:", driver.defaultRegion);
-        console.log("this is completedOrders:", driver.completedOrderIds);
-
-
+    updateDriverAccount(driver){
+    
         this.gsDB.collection("Drivers").doc(`${driver.driverId}`).set({
             name: driver.name,
             capacity: driver.capacity,
             points: driver.points,
             status: driver.status,
             defaultRegion: driver.defaultRegion,
-            completedOrderIds: driver.completedOrderIds,
-            
+            completedOrderIds: driver.completedOrderIds, 
         },
         { merge: true });
     }
-
+    
     updateDriverStatus(driverId, newStatus){
         return this.gsDB.collection("Drivers").doc(`${driverId}`).update({
             "status": newStatus
