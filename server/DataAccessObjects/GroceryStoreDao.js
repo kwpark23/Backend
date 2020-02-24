@@ -42,7 +42,7 @@ class GroceryStoreDao {
         var json_inventory = JSON.parse(stringInventoryData);
         var storeRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId);
         storeRef.get().then(doc => {
-            if (!doc.exists()) {
+            if (!doc.exists) {
                 console.log("Store doesn't exist");
                 return false;
             }
@@ -107,7 +107,7 @@ class GroceryStoreDao {
     /**********************Timer*************************/
 
     checkDate() {
-        _pruneInventoryListener(today);
+        this._pruneInventoryListener();
     }
 
     async _getStores() {
@@ -129,11 +129,11 @@ class GroceryStoreDao {
 
     async _pruneInventoryListener() {
         //get IDs of all stores in grocerySTores
-        storeIds = await _getStores();
-        uniqueStores = [...new Set(storeIds)];
+        let storeIds = await this._getStores();
+        let uniqueStores = [...new Set(storeIds)];
         //loop through stores and update inventories
         for (let index = 0; index < uniqueStores.length; index++) {
-            _pruneInventory(uniqueStores[index]);
+            this._pruneInventory(uniqueStores[index]);
         }
     }
 
