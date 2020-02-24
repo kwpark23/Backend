@@ -42,7 +42,7 @@ class GroceryStoreDao {
         var json_inventory = JSON.parse(stringInventoryData);
         var storeRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId);
         storeRef.get().then(doc => {
-            if (!doc.exists) {
+            if (!doc.exists()) {
                 console.log("Store doesn't exist");
                 return false;
             }
