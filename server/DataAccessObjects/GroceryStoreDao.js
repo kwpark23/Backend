@@ -1,5 +1,5 @@
 const Order = require("../Models/Order");
-const FieldValue = require("firebase-admin").firestore.FieldValue;
+const Item = require("../Models/Item");
 class GroceryStoreDao {
     constructor(gsDB) {
         this.gsDB = gsDB;
@@ -41,16 +41,19 @@ class GroceryStoreDao {
         }
         var stringInventoryData = JSON.stringify(newEdiOrder.inventoryItems);
         var json_inventory = JSON.parse(stringInventoryData);
-        var keyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).set({ tmp: 0 });
+        //var keyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).set({ tmp: 0 });
         var myKeyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).collection("InventoryCollection").doc("Items");
-        myKeyRef.set(json_inventory,
-            { merge: true });
-        return this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).update({ tmp: FieldValue.delete() }).then(check => {
-            return true;
-        }).catch(err => {
-            console.log("Could not delete field", err);
-            return false;
-        });
+        return myKeyRef.set(json_inventory,
+            { merge: true }).then(check => { return true; }).catch(err => {
+                console.log("Could not add inventory", err);
+                return false;
+            });
+        // return this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).update({ tmp: FieldValue.delete() }).then(check => {
+        //     return true;
+        // }).catch(err => {
+        //     console.log("Could not delete field", err);
+        //     return false;
+        // });
     }
 
     writeGroceryStoreData(companyName, location, storeNumber) {
@@ -79,10 +82,9 @@ class GroceryStoreDao {
             snapshot.forEach(doc => {
                 dbKeys.push(doc.id);
             });
-        })
-            .catch(err => {
-                console.log("Error getting documents", err);
-            });
+        }).catch(err => {
+            console.log("Error getting documents", err);
+        });
 
         return this._getKeyUnique(dbKeys);
     }
@@ -97,6 +99,64 @@ class GroceryStoreDao {
             return key;
         }
     }
+
+    /**********************Timers*************************/
+
+    checkDate() {
+        let today = new Date(Date.now());
+
+        pruneInventoryListener(today);
+    }
+
+    async getStores() {
+        let storesRef = await this.gsDB.collection("GroceryStores").get();
+        const storeIds = [];
+        try {
+            storesRef.forEach(doc => {
+                storeIds.push(doc.id);
+            });
+        } catch (error) {
+            console.log("Error getting stores", error);
+        }
+
+        storesRef.forEach(doc => {
+            storeIds.push(doc.id);
+        });
+        return storeIds;
+    }
+
+    async pruneInventoryListener(day) {
+        //get IDs of all stores in grocerySTores
+        storeIds = await getStores();
+        uniqueStores = [...new Set(storeIds)];
+        //loop through stores and update inventories
+        for (let index = 0; index < uniqueStores.length; index++) {
+            pruneInventory(uniqueStores[index]);
+        }
+    }
+
+    async pruneInventory(id) {
+        let storeRef = await this.gsDB.collection("GroceryStores").doc(id).collection("InventoryCollection").doc("Items");
+        try {
+            storeRef.get().then(snapshot => {
+                let inventory = snapshot.data();
+                for (var key in inventory) {
+                    let item = new Item.Item(inventory[key]);
+                    let itemEBD = item.getEdibleByDate();
+
+                    if (itemEBD < new Date(Date.now())) {
+                        delete inventory[key];
+                    }
+                }
+                console.log(inventory);
+                this.gsDB.collection("GroceryStores").doc(id).collection("InventoryCollection").doc("Items").set(inventory);
+
+            }).catch(err => { console.log(err) })
+        } catch (error) {
+            console.log("Error getting inventory", error);
+        }
+    }
+
 }
 module.exports = {
     GroceryStoreDao
