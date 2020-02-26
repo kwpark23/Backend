@@ -20,9 +20,7 @@ class OrderProcessor {
                 return true;
             }
             return false;
-        }).catch(error => {
-            console.log(error);
-        });
+        }).catch(err => { console.log("Error processing order validity", err); });
     }
 
     _attachNewListener(writePromise) {

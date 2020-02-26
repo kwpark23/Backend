@@ -1,7 +1,7 @@
 const AssertRequestValid = require("../Services/AssertObjectValid");
 
 class Item {
-    constructor(itemRef, ediOrderNumber) {
+    constructor(itemRef, ediOrderNumber, edibleByDate) {
         this.inventoryItemId = itemRef.inventoryItemId;
         this.ediOrderNumber = ediOrderNumber;
         this.name = itemRef.name;

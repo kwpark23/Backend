@@ -20,7 +20,6 @@ class GroceryStoreDao {
             console.log(order.getStatus())
             this.updateStoreInventoryQuantity(gsRef, orderInventory, groceryStoreInventory.data());
             return true;
-
         });
     }
 
@@ -42,10 +41,24 @@ class GroceryStoreDao {
         }
         var stringInventoryData = JSON.stringify(newEdiOrder.inventoryItems);
         var json_inventory = JSON.parse(stringInventoryData);
-    
-        var myKeyRef = this.gsDB.collection("GroceryStores").doc(`${newEdiOrder.groceryId}`).collection("InventoryCollection").doc("Items");
-        myKeyRef.set(json_inventory,
-            { merge: true });
+        var storeRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId);
+        storeRef.get().then(doc => {
+            if (!doc.exists) {
+                console.log("Store doesn't exist");
+                return false;
+            }
+            console.log("Store exists");
+        }).catch(err => {
+            console.log("Error getting store", err);
+            return false;
+        })
+
+        var myKeyRef = this.gsDB.collection("GroceryStores").doc(newEdiOrder.groceryId).collection("InventoryCollection").doc("Items");
+        return myKeyRef.set(json_inventory,
+            { merge: true }).then(check => { return true; }).catch(err => {
+                console.log("Could not add inventory", err);
+                return false;
+            });
     }
 
     writeGroceryStoreData(companyName, location, storeNumber, ediOrderNumber, inventory, storeId) {
@@ -73,10 +86,9 @@ class GroceryStoreDao {
             snapshot.forEach(doc => {
                 dbKeys.push(doc.id);
             });
-        })
-            .catch(err => {
-                console.log("Error getting documents", err);
-            });
+        }).catch(err => {
+            console.log("Error getting documents", err);
+        });
 
         return this._getKeyUnique(dbKeys);
     }
@@ -91,6 +103,58 @@ class GroceryStoreDao {
             return key;
         }
     }
+
+    /**********************Timer*************************/
+
+    async _getStores() {
+        let storesRef = await this.gsDB.collection("GroceryStores").get();
+        const storeIds = [];
+        try {
+            storesRef.forEach(doc => {
+                storeIds.push(doc.id);
+            });
+        } catch (error) {
+            console.log("Error getting stores", error);
+        }
+
+        storesRef.forEach(doc => {
+            storeIds.push(doc.id);
+        });
+        return storeIds;
+    }
+
+    async pruneInventory() {
+        //get IDs of all stores in grocerySTores
+        let storeIds = await this._getStores();
+        let uniqueStores = [...new Set(storeIds)];
+        //loop through stores and update inventories
+        for (let index = 0; index < uniqueStores.length; index++) {
+            this._deleteInedibles(uniqueStores[index]);
+        }
+    }
+
+    async _deleteInedibles(id) {
+        let storeRef = await this.gsDB.collection("GroceryStores").doc(id).collection("InventoryCollection").doc("Items");
+        try {
+            storeRef.get().then(snapshot => {
+                let inventory = snapshot.data();
+                for (var key in inventory) {
+                    let item = new Item.Item(inventory[key]);
+                    let itemEBD = item.getEdibleByDate();
+
+                    if (itemEBD < new Date(Date.now())) {
+                        delete inventory[key];
+                    }
+                }
+
+                this.gsDB.collection("GroceryStores").doc(id).collection("InventoryCollection").doc("Items").set(inventory);
+
+            }).catch(err => { console.log("Error getting store", err) })
+        } catch (error) {
+            console.log("Error getting inventory", error);
+        }
+    }
+
 }
 module.exports = {
     GroceryStoreDao
