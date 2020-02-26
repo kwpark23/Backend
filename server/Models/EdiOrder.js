@@ -1,10 +1,13 @@
 const Item = require("./Item");
+const AssertRequestValid = require("../Services/AssertObjectValid");
+
 class EdiOrder {
     constructor(ediOrder) {
         this.ediOrderNumber = ediOrder.ediOrderNumber;
         this.groceryId = ediOrder.groceryId;
         this.inventoryItems = {};
-        this.parseItems(ediOrder.inventoryItems)
+        this.parseItems(ediOrder.inventoryItems);
+        AssertRequestValid.assertObjectValid(this);
     }
 
     parseItems(inventoryItemsRef) {
@@ -13,8 +16,9 @@ class EdiOrder {
         }
     }
 
-    getGroceryId() {
-        return this.groceryId;
+    //set GroceryID
+    setGroceryId(groceryId){
+        this.groceryId = groceryId;
     }
 }
 

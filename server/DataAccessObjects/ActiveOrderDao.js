@@ -23,8 +23,7 @@ class ActiveOrderDao {
     addToActiveOrders(order) {
         //write order to db; index by orderId
         var jsonOrder = JSON.parse(JSON.stringify(order));
-        let key = this.generateUniqueKey();
-        this.gsDB.collection("ActiveOrders").doc(`${key}`).set(
+        return this.gsDB.collection("ActiveOrders").doc(`${order.orderId}`).set(
             jsonOrder
         );
     }

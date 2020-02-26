@@ -1,5 +1,6 @@
 const Order = require("../Models/Order");
-const Item = require("../Models/Item");
+const EdiOrder = require("../Models/EdiOrder");
+
 class GroceryStoreDao {
     constructor(gsDB) {
         this.gsDB = gsDB;
@@ -60,20 +61,19 @@ class GroceryStoreDao {
             });
     }
 
-    writeGroceryStoreData(companyName, location, storeNumber) {
-        var storeId = this.generateUniqueKey();
+    writeGroceryStoreData(companyName, location, storeNumber, ediOrderNumber, inventory, storeId) {
         this.gsDB.collection("GroceryStores").doc(`${storeId}`).set({
             companyName: companyName,
             location: location,
             storeNumber: storeNumber
         },
-            { merge: true });
-    }
-
-    updateGroceryStoreData(storeID, productID, newquantity) {
-        data = {}
-        data[storeID + "." + productID] = newquantity
-        this.gsDB.collection('GroceryStores').doc(`${storeID}`).collection('InventoryCollection').doc('Items').update(data);
+            { merge: true }).then(() =>{
+                var ediOrder = new EdiOrder.EdiOrder(storeId, ediOrderNumber, inventory);
+                this.newInventoryToGroceryStoreData(ediOrder);
+            }).catch(function(error){
+                console.error("Error writing document:", error);
+            });
+        return storeId;
     }
 
     generateUniqueKey() {
