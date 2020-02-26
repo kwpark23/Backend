@@ -1,3 +1,4 @@
+/* eslint-disable promise/always-return */
 // Firebase Imports
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
@@ -22,7 +23,10 @@ var driverDao = new DriverDao.DriverDao(gsDB);
 var processor = new OrderProcessor.OrderProcessor(gsDB, activeOrdersDao, groceryStoreDao, driverDao);
 var groceryStoreService = new GroceryStoreService.GroceryStoreService(groceryStores);
 
-
+exports.pruneDaily = functions.pubsub.schedule('0 0 * * *').onRun((context) => {
+    groceryStoreDao.pruneInventory();
+    return null;
+});
 /*******************Food Bank EndPoint *************************/
 const app = express();
 
@@ -37,7 +41,7 @@ app.post("/foodBank/placeOrder", (request, response) => {
 });
 
 /*****************Grocery Store EndPoint **********************/
-app.post("/groceryStore/sendUser", (request, response) => {
+app.post("/groceryStore/updateUserAccount", (request, response) => {
     var groceryUser = request.body;
     var storeId = groceryStoreDao.generateUniqueKey();
     groceryStoreDao.writeGroceryStoreData(

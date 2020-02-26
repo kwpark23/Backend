@@ -13,7 +13,7 @@
                 "EDIOrderNumber": "124AZ",
                 "entryCreatedDate": "02-01-21",
                 "lastModified": "02-01-21",
-                "edibleByDate": "02-03-21"
+                "edibleByDate": "2020-02-03"
             },
             "1235": {
                 "productName": "orange",
@@ -24,7 +24,7 @@
                 "EDIOrderNumber": "124AZ",
                 "entryCreatedDate": "02-01-21",
                 "lastModified": "02-01-21",
-                "edibleByDate": "02-04-21"
+                "edibleByDate": "2020-02-03"
             },
             "1236": {
                 "productName": "banana",
@@ -35,7 +35,7 @@
                 "EDIOrderNumber": "124AZ",
                 "entryCreatedDate": "02-01-21",
                 "lastModified": "02-01-21",
-                "edibleByDate": "02-07-21"
+                "edibleByDate": "2020-02-03"
             },
             "1237": {
                 "productName": "peach",
@@ -46,7 +46,7 @@
                 "EDIOrderNumber": "124AZ",
                 "entryCreatedDate": "02-01-21",
                 "lastModified": "02-01-21",
-                "edibleByDate": "02-07-21"
+                "edibleByDate": "2020-02-03"
             }
         }
     }

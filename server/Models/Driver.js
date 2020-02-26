@@ -1,3 +1,4 @@
+const AssertRequestValid = require("../Services/AssertObjectValid");
 
 const DriverStates = {
     AVAILABLE: "Driver available to deliever an order",
@@ -18,6 +19,7 @@ class Driver {
         this.points = driverRef.points;
         this.setCompletedOrderIds(driverRef.completedOrderIds);
         this.setDriverStatus(driverRef.status);
+        AssertRequestValid.assertObjectValid(this);
     }
 
     setDriverId(driverId){ this.driverId = driverId }

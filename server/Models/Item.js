@@ -1,12 +1,15 @@
+const AssertRequestValid = require("../Services/AssertObjectValid");
+
 class Item {
-    constructor(itemRef, ediOrderNumber) {
+    constructor(itemRef, ediOrderNumber, edibleByDate) {
         this.inventoryItemId = itemRef.inventoryItemId;
         this.ediOrderNumber = ediOrderNumber;
         this.name = itemRef.name;
         this.quantity = itemRef.quantity;
         this.expiryDate = new Date(itemRef.expiryDate);
         this.groceryStoreId = itemRef.groceryStoreId;
-        this.edibleByDate = new Date(itemRef.edibleByDate)
+        this.edibleByDate = new Date(itemRef.edibleByDate);
+        AssertRequestValid.assertObjectValid(this);
     }
 
     setEdibleByDate(date) {
