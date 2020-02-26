@@ -106,10 +106,6 @@ class GroceryStoreDao {
 
     /**********************Timer*************************/
 
-    checkDate() {
-        this._pruneInventoryListener();
-    }
-
     async _getStores() {
         let storesRef = await this.gsDB.collection("GroceryStores").get();
         const storeIds = [];
@@ -127,17 +123,17 @@ class GroceryStoreDao {
         return storeIds;
     }
 
-    async _pruneInventoryListener() {
+    async pruneInventory() {
         //get IDs of all stores in grocerySTores
         let storeIds = await this._getStores();
         let uniqueStores = [...new Set(storeIds)];
         //loop through stores and update inventories
         for (let index = 0; index < uniqueStores.length; index++) {
-            this._pruneInventory(uniqueStores[index]);
+            this._deleteInedibles(uniqueStores[index]);
         }
     }
 
-    async _pruneInventory(id) {
+    async _deleteInedibles(id) {
         let storeRef = await this.gsDB.collection("GroceryStores").doc(id).collection("InventoryCollection").doc("Items");
         try {
             storeRef.get().then(snapshot => {
@@ -150,10 +146,10 @@ class GroceryStoreDao {
                         delete inventory[key];
                     }
                 }
-                console.log(inventory);
+
                 this.gsDB.collection("GroceryStores").doc(id).collection("InventoryCollection").doc("Items").set(inventory);
 
-            }).catch(err => { console.log(err) })
+            }).catch(err => { console.log("Error getting store", err) })
         } catch (error) {
             console.log("Error getting inventory", error);
         }

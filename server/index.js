@@ -24,7 +24,7 @@ var processor = new OrderProcessor.OrderProcessor(gsDB, activeOrdersDao, grocery
 var groceryStoreService = new GroceryStoreService.GroceryStoreService(groceryStores);
 
 exports.pruneDaily = functions.pubsub.schedule('0 0 * * *').onRun((context) => {
-    groceryStoreDao.checkDate();
+    groceryStoreDao.pruneInventory();
     return null;
 });
 /*******************Food Bank EndPoint *************************/
