@@ -2,7 +2,7 @@ const Item = require("./Item");
 const AssertRequestValid = require("../Services/AssertObjectValid");
 
 const OrderStates = {
-    LOOKING_FOR_DRIVER: "Looking For Diver",
+    LOOKING_FOR_DRIVER: "Looking For Driver",
     UNABLE_TO_COMPLETE: "Order is unable to completed",
     VALID: "Order is able to completed",
     PICKUP_IN_PROGRESS: "Driver on the way to pick up inventory from the grocery store",
@@ -23,10 +23,10 @@ class Order {
         this.driverId;
         this.ediOrderNumber = orderRef.ediOrderNumber;
         this.parseItems(orderRef.inventoryItems);
-        if (orderRef.orderId !== null) {
+        if (orderRef.orderId !== undefined) {
             this.orderId = orderRef.orderId;
         }
-        this.setStatus(orderRef.status)
+        this.setStatus(orderRef.status);
         AssertRequestValid.assertObjectValid(this);
     }
 
@@ -38,7 +38,7 @@ class Order {
 
     setStatus(newStatus) {
         switch (newStatus) {
-            case "Looking For Diver":
+            case "Looking For Driver":
                 this.status = OrderStates.LOOKING_FOR_DRIVER;
                 break;
             case "Order is unable to completed":
@@ -81,14 +81,13 @@ class Order {
     getInventory() { return this.inventoryItems; }
 
     parseItems(inventoryItemsRef) {
-
         for (const [itemId, item] of Object.entries(inventoryItemsRef)) {
             this.inventoryItems[itemId] = new Item.Item(item, this.ediOrderNumber)
             this.totalQuantity += Number(item.quantity);
         }
     }
     notifyFoodBank(foodBankURL) {
-        console.log("Food Bank Notified 200")
+        console.log("Food Bank Notified 200");
     }
 
     notifyGroceryStore(groceryStoreURL) {
@@ -96,7 +95,7 @@ class Order {
     }
 
     notifyDriver(potentialDriverId) {
-        console.log("Driver with id " + potentialDriverId + " notified with for order " + this.orderId)
+        console.log("Driver with id " + potentialDriverId + " notified with for order " + this.orderId);
     }
 }
 

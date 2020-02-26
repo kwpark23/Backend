@@ -1,24 +1,39 @@
 const Driver = require("../Models/Driver");
+const Order = require("../Models/Order");
 
 class OrderProcessor {
     constructor(gsDB, activeOrderDao, groceryStoreDao, driverDao) {
         var driverQuery = gsDB.collection("Drivers");
-        var orderQuery = gsDB.collection("ActiveOrders");
+        this._orderQuery = gsDB.collection("ActiveOrders");
         this.activeOrderDao = activeOrderDao;
         this.groceryStoreDao = groceryStoreDao;
         this.driverDao = driverDao;
         this.initDriverListener(driverQuery);
-        this.initOrderListener(orderQuery);
+        this.initOrderListener(this._orderQuery);
     }
 
     processOrder(order) {
         this.groceryStoreDao.isOrderValid(order).then(res => {
             if (res) {
-                this.driverDao.notifyAllValidDrivers(order);
-                this.activeOrderDao.addToActiveOrders(order);
+                var writePromise = this.activeOrderDao.addToActiveOrders(order);
+                this._attachNewListener(writePromise);
                 return true;
             }
             return false;
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
+    _attachNewListener(writePromise) {
+        writePromise.then(res => {
+            if (res.writeTime !== undefined) {
+                this._initOrderListener(this._orderQuery.doc(order.orderId.toString()));
+                return true;
+            }
+            return false;
+        }).catch(err => {
+            console.log(err);
         });
     }
 
@@ -37,25 +52,39 @@ class OrderProcessor {
     }
 
     initOrderListener(orderQuery) {
-        // orderQuery.onSnapshot(snapshot => {
-        //     let listener = snapshot.docChanges();
-        //     listener.forEach(element => {
-        //         var order = new Order.Order(element.doc.data());
-        //         order.setOrderId(element.doc.data().orderId);
-        //         console.log(element.doc.data().status)
-        //         if (element.doc.data().status == 'Looking For Driver') {
-        //             this.driverDao.notifyAllValidDrivers(order)
-        //         } else if (element.doc.data().status == 'In Progress') {
-        //             console.log('Advanced Shipping Notice - drivers')
-        //             console.log('Advanced Shipping Notice - grocery')
-        //         } else if (element.doc.data().status == 'Picked Up') {
-        //             console.log('order received')
-        //             console.log(element.doc.data().orderRecieved)
-        //         }
-        //     });
-        // });
+        orderQuery.get().then(activeOrders => { // Get all the activeOrder documents
+            return activeOrders.docs.forEach(activeOrder => {
+                // Initialize the order listener
+                this._initOrderListener(orderQuery.doc(activeOrder.ref.id));
+            });
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
+    _initOrderListener(activeOrderQuery) {
+        activeOrderQuery.onSnapshot(orderSnapshot => {
+            if (orderSnapshot.data() !== undefined && orderSnapshot.data().inventoryItems !== undefined) {
+                // Generate the Order object and assign its orderId
+                var order = new Order.Order(orderSnapshot.data());
+                order.setOrderId(orderSnapshot.data().orderId);
+                // Get the status
+                var status = orderSnapshot.data().status;
+                if (status === 'Looking For Driver') {
+                    // Notify all drivers who can take the order
+                    this.driverDao.notifyAllValidDrivers(order);
+                } else if (status === 'In Progress') {
+                    // Send out Advanced Shipping Notice
+                    console.log('Advanced Shipping Notice - drivers');
+                    console.log('Advanced Shipping Notice - grocery');
+                } else if (status === 'Picked Up') {
+                    // Change status of orderRecieved
+                    console.log('order received');
+                    console.log(element.doc.data().orderRecieved);
+                }
+            }
+        });
+    }
 
     notifyDriver(driver, orders) {
         orders.forEach(order => {
