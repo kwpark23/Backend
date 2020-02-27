@@ -21,7 +21,7 @@ var activeOrdersDao = new ActiveOrderDao.ActiveOrderDao(gsDB);
 var groceryStoreDao = new GroceryStoreDao.GroceryStoreDao(gsDB);
 var driverDao = new DriverDao.DriverDao(gsDB);
 var processor = new OrderProcessor.OrderProcessor(gsDB, activeOrdersDao, groceryStoreDao, driverDao);
-var groceryStoreService = new GroceryStoreService.GroceryStoreService(groceryStores);
+var groceryStoreService = new GroceryStoreService.GroceryStoreService(groceryStores, gsDB);
 
 exports.pruneDaily = functions.pubsub.schedule('0 0 * * *').onRun((context) => {
     groceryStoreDao.pruneInventory();
@@ -51,6 +51,7 @@ app.post("/groceryStore/updateUserAccount", (request, response) => {
         groceryUser.ediOrderNumber,
         groceryUser.inventory,
         storeId)
+    groceryStoreService.attachListener(storeId, gsDB)
     response.status(200).send("Grocery Store " + storeId + " Registered");
 });
 

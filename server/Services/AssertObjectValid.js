@@ -2,9 +2,9 @@ const Order = require("../Models/Order");
 
 requirements = {
     "Order": ["foodBankId", "groceryId", "ediOrderNumber", "inventoryItems"],
-    "Item": ["ediOrderNumber", "name", "quantity", "groceryStoreId"],
+    "Item": ["EDIOrderNumber", "productName", "quantity", "storeID"],
     "Driver": ["capacity", "status"],
-    "EdiOrder": ["ediOrderNumber", "groceryId", "inventoryItems"]
+    "EdiOrder": ["EDIOrderNumber", "storeNumber", "inventory"]
 };
 
 function assertObjectValid(object) {
